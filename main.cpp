@@ -11,8 +11,8 @@ bool isNumberValid(const std::string &str) {
   int number_of_dots = 0;
   for(char c:str) {
     if (c == '.') {number_of_dots++;}
+    if(number_of_dots > 1) {return false;}
   }
-  if(number_of_dots > 1) {return false;}
 
   if (str[0] == '.' || str[str.length() - 1] == '0') {return false;}
   return true;
@@ -31,6 +31,19 @@ int main() {
     std::cout << "Error! the provided number is not a number. Please provide a real number!\n";
     return 1;
   }
+
+  std::cout << "\nGot it. The number you provided is " << input << ".\n";
+  std::cout << "Now, please provide the number of digits you want to approximate to:\n";
+
+  unsigned int digits;
+  std::cin >> digits;
+
+  if(std::cin.fail()) {
+    std::cout << "Invalid digits input!\n";
+    return 1;
+  }
+
+  std::cout << "\nGot it. So, you're approximating the square root of the number " << input << " to " << digits << " digits.\n";
   
   return 0;
 }
