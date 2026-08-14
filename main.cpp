@@ -1,3 +1,4 @@
+#include <fstream>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -121,6 +122,17 @@ int main() {
   Parts parts = dissectStringNumber(input);
   std::vector<uint> whole = parts.whole;
   std::vector<uint> decimal = parts.decimal;
+
+  std::cout << "Please set the name of the output file: (automatically added .txt, don't include it)\n";
+  std::string filename;
+  std::cin >> filename;
+  filename += ".txt";
+  std::ofstream outFile(filename);
+  if(!outFile.is_open()) {
+    std::cout << "\nERROR: failed to open create file "<<filename<<" !\n";
+    return 1;
+  }
+  std::cout << "\nGot it! saving the file into (" << filename << "). \n";
   
   // -----
   // The part that will actually calculate the root:
@@ -147,7 +159,12 @@ int main() {
     nextDPrediction = nextDigit(number, nextColumnNumber);
     number *= 10;
     number += nextDPrediction;
+
+    if(i == parts.whole.size()) outFile << ".";
+    outFile << nextDPrediction;
+    std::cout << "\r ---- Digits written " << i+1 << "/" << digits << " ----";
   }
 
+  std::cout << std::endl;
   return 0;
 }
