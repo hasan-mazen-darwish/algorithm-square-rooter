@@ -7,11 +7,11 @@
 class BigNumber {
   private:
     static inline const uint64_t BASE = 100000000000000000ULL; //10^17
-    std::vector<uint64_t> digits;
 
     void trim();
 
   public:
+    std::vector<uint64_t> digits;
     BigNumber();
 
     // Assignment

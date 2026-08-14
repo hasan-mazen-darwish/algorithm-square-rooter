@@ -1,11 +1,14 @@
 #include "./BigNumber.h"
 #include <cstdint>
+#include <iostream>
 
-BigNumber::BigNumber(): digits(0) {}
+BigNumber::BigNumber() {
+  digits.push_back(0);
+}
 
 BigNumber& BigNumber::operator=(uint64_t integer) {
   if(integer == 0) {
-    digits = {};
+    digits = {0};
     return *this;
   }
 
@@ -30,16 +33,7 @@ void BigNumber::trim() {
 bool BigNumber::operator>(uint64_t integer) const {
   BigNumber integerToNative;
   integerToNative = integer;
-  integerToNative.trim();
-
-  if(digits.size() > integerToNative.digits.size()) return true;
-  else if(digits.size() < integerToNative.digits.size()) return false;
-
-  for (size_t i=digits.size(); i>0; --i) {
-    if(integerToNative.digits[i-1] > digits[i-1]) return false;
-  }
-
-  return false;
+  return *this > integerToNative;
 }
 
 bool BigNumber::operator<(uint64_t integer) const {
@@ -77,6 +71,7 @@ bool BigNumber::operator>(const BigNumber& other) const {
 
   for(size_t i=digits.size(); i>0; --i) {
     if(digits[i-1] > other.digits[i-1]) return true;
+    else if(digits[i-1] < other.digits[i-1]) return false;
   }
   return false;
 }
@@ -113,19 +108,18 @@ BigNumber& BigNumber::operator+=(const BigNumber& other) {
   size_t length = 0;
   if(digits.size() >= other.digits.size()) length = digits.size();
   else length = other.digits.size();
+  
   for (size_t i=0; i<length; i++) {
-    if(i >= digits.size()) digits.push_back(carry+other.digits[i]);
-    else if(i >= other.digits.size()) {
-      digits[i] += carry;
-      digits[i] = digits[i] % BASE;
-      carry = digits[i]/BASE;
-    }
-    else {
-      uint64_t sum = digits[i] + other.digits[i] + carry;
-      digits[i] = sum % BASE;
-      carry = sum/BASE;
-    }
+    if(i >= digits.size()) digits.push_back(0);
+
+    uint64_t sum = carry + digits[i];
+    if(i < other.digits.size()) sum += other.digits[i];
+
+    digits[i] = sum % BASE;
+    carry = sum / BASE;
   }
+
+  if(carry) digits.push_back(carry);
 
   trim();
   return *this;
@@ -135,7 +129,7 @@ BigNumber& BigNumber::operator+=(uint64_t integer) {
   if(integer == 0) return *this;
   BigNumber integerToNative;
   integerToNative = integer;
-  *this -= integerToNative;
+  *this += integerToNative;
   return *this;
 }
 
@@ -156,6 +150,10 @@ BigNumber BigNumber::operator+(const BigNumber& other) {
 // ----
 
 BigNumber& BigNumber::operator-=(uint64_t integer) {
+  if(integer == 0) {
+    digits = {0};
+    return *this;
+  }
   BigNumber integerToNative;
   integerToNative = integer;
   *this -= integerToNative;
