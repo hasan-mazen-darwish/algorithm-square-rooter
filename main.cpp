@@ -1,5 +1,7 @@
+#include <chrono>
 #include <fstream>
 #include <iostream>
+#include <stdexcept>
 #include <string>
 #include <vector>
 #include "BigNumber.h"
@@ -83,16 +85,25 @@ Parts dissectStringNumber(const std::string &input) {
 
 unsigned int d;
 BigNumber num; // The result of 20*number+d
+unsigned int best_d = 0;
+BigNumber bestColumnPrediction;
 
 unsigned int& nextDigit(BigNumber& number, BigNumber& nextColumnNumber) {
-  for(d=0; d<10; d++) {
-    num = number*20 + d;
-    if(num == nextColumnNumber) return d;
+  best_d = 0;
+  for(d=0; d<10; ++d) {
+    BigNumber b = number*20 + d;
+    b *= d;
+    if(b <= nextColumnNumber) {
+      best_d = d;
+      bestColumnPrediction = b;
+    }
+    else break;
   }
-  return d; // Just to get rid of the compiler error.
+  return best_d;
 }
 
 int main() {
+  try{
   std::cout << "Hello and welcome to the square rooter algorithm!" << std::endl;
   std::cout << "An algorithm completely built with native C++ (No external dependencies)" << std::endl;
   std::cout << "-----------\n\n";
@@ -138,9 +149,10 @@ int main() {
   // The part that will actually calculate the root:
   // -----
 
+  auto start = std::chrono::high_resolution_clock::now();
   BigNumber number;
   BigNumber nextColumnNumber; // The resulted number from number*100+nextTwoDigits
-  BigNumber bestColumnPrediction; // The number that we subtract nextColumnNumber from
+  nextColumnNumber = 0;
   unsigned int nextDPrediction; // The next digit prediction
   unsigned int nextTwoDigits; // The 2 digits we are working on.
 
@@ -155,7 +167,7 @@ int main() {
       && i-parts.whole.size()<parts.decimal.size()
     ) nextTwoDigits = parts.decimal[i-parts.whole.size()];
     else nextTwoDigits = 0;
-    nextColumnNumber = number * 100 + nextTwoDigits;
+    nextColumnNumber = nextColumnNumber * 100 + nextTwoDigits;
     nextDPrediction = nextDigit(number, nextColumnNumber);
     number *= 10;
     number += nextDPrediction;
@@ -163,8 +175,15 @@ int main() {
     if(i == parts.whole.size()) outFile << ".";
     outFile << nextDPrediction;
     std::cout << "\r ---- Digits written " << i+1 << "/" << digits << " ----";
+    nextColumnNumber -= bestColumnPrediction;
   }
 
+  auto end = std::chrono::high_resolution_clock::now();
+  auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end-start);
+  std::cout << "\nDone! it took your device " << duration.count() << "ms to calculate!\n";
   std::cout << std::endl;
   return 0;
+  } catch(const std::runtime_error& error) {
+    std::cerr << error.what();
+  }
 }
