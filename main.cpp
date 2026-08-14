@@ -83,12 +83,12 @@ Parts dissectStringNumber(const std::string &input) {
 unsigned int d;
 BigNumber num; // The result of 20*number+d
 
-unsigned int& nextDigit(BigNumber& number, BigNumber& nextColumnNumber, unsigned int guess=5) {
-  d = guess;
-  num = number*20 + d;
-  if(num == nextColumnNumber) return d;
-  else if(num < nextColumnNumber) return nextDigit(number, nextColumnNumber, d-(d/2));
-  else return nextDigit(number, nextColumnNumber, d+(d/2));
+unsigned int& nextDigit(BigNumber& number, BigNumber& nextColumnNumber) {
+  for(d=0; d<10; d++) {
+    num = number*20 + d;
+    if(num == nextColumnNumber) return d;
+  }
+  return d; // Just to get rid of the compiler error.
 }
 
 int main() {
