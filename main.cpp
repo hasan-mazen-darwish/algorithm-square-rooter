@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include "BigNumber.h"
 
 bool isNumberValid(const std::string &str) {
   bool has_only_digits_and_dots = std::all_of(str.begin(), str.end(), [](unsigned char c){
@@ -78,6 +79,18 @@ Parts dissectStringNumber(const std::string &input) {
   return parts;
 }
 
+
+unsigned int d;
+BigNumber num; // The result of 20*number+d
+
+unsigned int& nextDigit(BigNumber& number, BigNumber& nextColumnNumber, unsigned int guess=5) {
+  d = guess;
+  num = number*20 + d;
+  if(num == nextColumnNumber) return d;
+  else if(num < nextColumnNumber) return nextDigit(number, nextColumnNumber, d-(d/2));
+  else return nextDigit(number, nextColumnNumber, d+(d/2));
+}
+
 int main() {
   std::cout << "Hello and welcome to the square rooter algorithm!" << std::endl;
   std::cout << "An algorithm completely built with native C++ (No external dependencies)" << std::endl;
@@ -109,5 +122,32 @@ int main() {
   std::vector<uint> whole = parts.whole;
   std::vector<uint> decimal = parts.decimal;
   
+  // -----
+  // The part that will actually calculate the root:
+  // -----
+
+  BigNumber number;
+  BigNumber nextColumnNumber; // The resulted number from number*100+nextTwoDigits
+  BigNumber bestColumnPrediction; // The number that we subtract nextColumnNumber from
+  unsigned int nextDPrediction; // The next digit prediction
+  unsigned int nextTwoDigits; // The 2 digits we are working on.
+
+  for(unsigned int i=0; i<digits; i++) {
+    // Here we start the loop. So, we need to guess the number
+    // d that d*(20*number + d) < (100*number + next 2 digits)^2
+
+    if(i<parts.whole.size()) nextTwoDigits = parts.whole[i];
+    else if(
+      i>=parts.whole.size()
+      && parts.decimal.size() != 0
+      && i-parts.whole.size()<parts.decimal.size()
+    ) nextTwoDigits = parts.decimal[i-parts.whole.size()];
+    else nextTwoDigits = 0;
+    nextColumnNumber = number * 100 + nextTwoDigits;
+    nextDPrediction = nextDigit(number, nextColumnNumber);
+    number *= 10;
+    number += nextDPrediction;
+  }
+
   return 0;
 }
