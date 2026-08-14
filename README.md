@@ -13,16 +13,22 @@ to install GCC, you can see their official documentation [here](https://gcc.gnu.
 To install Clang (probably for Termux), you can refer to their [official documentation](https://clang.llvm.org/get_started.html), or if you are on Termux, just run these commands:
 `pkg update & pkg upgrade -y`
 then
-`pkg install clang -y`
+```bash
+pkg install clang -y
+```
 
 
 ## Clone, build and run
 
 to clone, you can simply run this:
-`git clone https://github.com/hasan-mazen-darwish/algorithm-square-rooter.git`
+```bash
+git clone https://github.com/hasan-mazen-darwish/algorithm-square-rooter.git
+```
 
 and then
-`cd algorithm-square-rooter`
+```bash
+cd algorithm-square-rooter
+```
 
 after that, you will find teo files: `build.sh` and `run.sh`, they already are built so you execute the build.sh and then run the resulting binary file with run.sh, but if you know a better way, you can modify them and get them to work your own way. And, please consider installing GCC (or clang on Termux. works perfectly without the need to change anything in the build.sh file). but if you prefer Clang, you can change g++ to cling++.
 
@@ -50,4 +56,7 @@ For the digits, note that the digits you insert are the exact number of the digi
 
 Another note, if you put the input as 4, it will still infinitely write zeros after the 2. as long as it did not hit the limit of the digits, because I did not make the algorithm to output a pure 2 when square rooting 4.
 
-For the last inout, it is the file. The program will ask you for the file name you want to store the file in it. Please note that the file name you will choose will automatically be before a .txt file. If you wish to use another file extension, feel free to use the command `mv filename.txt filename.yourextension`.
+For the last inout, it is the file. The program will ask you for the file name you want to store the file in it. Please note that the file name you will choose will automatically be before a .txt file. If you wish to use another file extension, feel free to use the command 
+```bash
+mv filename.txt filename.yourextension
+```
