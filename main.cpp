@@ -89,15 +89,18 @@ unsigned int best_d = 0;
 BigNumber bestColumnPrediction;
 
 unsigned int& nextDigit(BigNumber& number, BigNumber& nextColumnNumber) {
-  best_d = 0;
-  for(d=0; d<10; ++d) {
-    BigNumber b = number*20 + d;
-    b *= d;
-    if(b <= nextColumnNumber) {
-      best_d = d;
-      bestColumnPrediction = b;
+  unsigned int low=0, high=9;
+  while (low <= high) {
+    unsigned int mid = (high+low)/2;
+    BigNumber trial = (number*20+mid)*mid;
+    if(trial <= nextColumnNumber) {
+      best_d = mid;
+      bestColumnPrediction = trial;
+      low = mid + 1;
     }
-    else break;
+    else {
+      high = mid - 1;
+    }
   }
   return best_d;
 }
