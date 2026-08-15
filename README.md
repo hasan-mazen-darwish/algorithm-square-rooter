@@ -97,6 +97,8 @@ std::vector<uint> decimal = parts.decimal;
 
 So, the program is actually getting the number of the user as a string! this property will permit the user to input a crazy number like 123456789.987654321123456789 without getting rounded by the float numbers. Plus, a string is wonderful to dissect to the digits pairs the long division method.
 
+### dissecting the user's number input.
+
 Now, we will be explaining the `dissectStringNumber` function logic.
 
 So, let's take an example of all the cases that this function gets:
@@ -158,4 +160,59 @@ and here, the digits pairs are going to be stored in vectors, like we saw, as 12
 
 Now, for the dissecting function.
 
-So, the first thing we are doing is taking the number, then look for the dot. 
+So, the first thing we are doing is taking the number, then look for the dot.
+
+```cpp
+size_t dotIndex = input.find('.');
+```
+
+Then, we define the strings of the whole and decimal parts. And as a first step, we set the whole part as the full number. Next, as we have ourselves the index of the dot, we see if the dot exists, if it does, then we slice the string into the first part as the whole part, and the second part as the decimal part:
+
+```cpp
+std::string wholeString = input;
+std::string decimalString = "";
+if(dotIndex != std::string::npos) {
+    wholeString = input.substr(0, dotIndex);
+    decimalString = input.substr(dotIndex + 1);
+}
+```
+
+and now, we need to filter the whole part. We cannot accept a whole part of "0000000002" for example. We must filter the given whole number, so we check every digit and clear out every zero until we hit a number. If we hit a regular number, we know that the number we have got is now the actual number; and we stop the checking loop. And finally, after that, we simply check if the whole number is empty (since an input like "0.1" for example will make the whole part empty as we terminate the leading 0), we replace it with double zeroes "00" (remember when we said that we need to deal with 2 digits at a time? here, we are handing the algorithm the 2 digits in a plate of gold).
+
+```cpp
+for (int i=0; i<wholeString.length() ; i++) {
+    if(wholeString[i] != '0') break;
+    else wholeString.pop_back();
+}
+if(wholeString == "") wholeString = "00";
+```
+
+Doing the same for the decimal part, even though it is unnecessary, we check the digits from the last digit all the way back to the decimal point, and do the exact same filtering.
+
+```cpp
+for (int i=decimalString.length()-1 ; i>=0 ; i--) {
+    if(decimalString[i] != '0') break;
+    else decimalString.pop_back();
+}
+```
+
+Now, as the comments of the code explain, I am just setting two booleans to check if the given whole and decimal parts are even or odd:
+
+```cpp
+// Here I am checking if the whole numbers are pairs like 1234 or not like 12345
+bool isWholePartPairs = wholeString.length()%2 == 0;
+// Same for the decimals
+bool isDecimalPartPairs = decimalString.length()%2 == 0;
+```
+
+Finally, I am applying the theoretical part of dissecting the whole and decimal part of the given input. You can check the code directly to see how it is applied (`main.cpp` file).
+
+Now. After the theoretical and programmatical side of the dissection of the user's input, let's have a look at the mysterious `BigNumber` type.
+
+### Handling huge numbers.
+
+So, when handling with such an algorithm, the expected outputs are very large. Think of hundreds, thousands, or millions of digits (if you go crazy), and the maximum numbers the computer can store is up to 2^64 - 1 (something big but not big enough), think of 18 digits. Now, we need a logic we can use to byoass these limits. To do that, we need **a new base of numbers**.
+
+So, before we introduce the new method, I'll need to explain the base of numbers and how do operations apply to the numbers. Feel free to skip it if you are confident with number bases and the computational side behind them.
+
+So, a number base of n is simply saying that we have n digits to work with. Starting from 0 to n-1. For example, the base 10 we use daily contains 10 digits: starting from 0 to 9. For the binary system, it is a base 2 system, with only 0 and one. The hex, or base 16 system, has 16 digits, starting from 0 to 15, labeling 10 as A, 11 as B, and all the way to 15 as F. It might be confusing, but think of A at hex is 10 in the base 10. It's just the same value, just a different system. You can check [this article](https://betterexplained.com/articles/numbers-and-bases/) for what a number base/system is.
