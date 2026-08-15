@@ -141,6 +141,6 @@ we are adding infinite zeros as we continue. And, this is the logic used in the 
 
 and a number like, for example, the square root of 2 (e.g. you want to calculate the 4th root of 2), the result number is something big as you scale, and it looks like: 1.41421356237309..., so it is represented as:
 
-√2 -> <1> , <41, 12, 13, 56, 23, 73, 09, ...>
+√2 -> <1> , <41, 42, 13, 56, 23, 73, 09, ...>
 
 and you can clone the git and modify the algorithm to also fit these numbers!
