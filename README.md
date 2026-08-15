@@ -144,3 +144,18 @@ and a number like, for example, the square root of 2 (e.g. you want to calculate
 √2 -> <1> , <41, 42, 13, 56, 23, 73, 09, ...>
 
 and you can clone the git and modify the algorithm to also fit these numbers!
+
+Now, in the code, we have a `struct` designed to store the whole and decimal part of the number:
+
+```cpp
+struct Parts {
+  std::vector<uint> whole;
+  std::vector<uint> decimal;
+};
+```
+
+and here, the digits pairs are going to be stored in vectors, like we saw, as 123.123 -> <1, 23>, <12, 30>.
+
+Now, for the dissecting function.
+
+So, the first thing we are doing is taking the number, then look for the dot. 
