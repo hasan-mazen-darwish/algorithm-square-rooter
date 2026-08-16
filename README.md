@@ -227,6 +227,17 @@ let's say I am dealing with base 100 (10^2), and we want to store the number 134
 
 So, this is how libraries that deal with huge integers work, and, usually they store numbers in relatively smaller bases than my custom built library, because they are generic. They need to make sure that the max digit multiplied by the max digit won't overwhelm the integer they're dealing with, also that they need to make sure they include negative numbers as well. And here is where the custom logic shines: if you look at the long division method, all the numbers are integers and positive. Also, the max number we multiply a big ingeger with is 100 when we add 2 digits to the right column number (it is equivalent to multiplying the number by 100 and summing those digits). Therefore, we can boost the number of digits to 10^17 comfortably! And these high optimized numbers make the program work faster than using the BigInt libraries and packages, despite having these big libraries very optimized (and absolutely more optimized than my code. Far more). It's just an unfair competition where I use approximately the double of their digits with a language like C++ that's already powerful in maths.
 
-Now, let's discuss the operations.
+Now, let's discuss the operations. The only operations we need are the addition, substraction, and multiplication.
 
+#### Addition
 
+So, for addition, let's have this example:
+1 2 3 4
+       +
+  9 2 9
+
+So, as we learned in school (and as I did in my algorithm), here we take the first digit of each number and add them. The result is 9+4=13. As we humans do, we take the first digit, 3, and put it in the result, and put the 1 into the carry. Now, we will be doing this programmatically different. So, 3 here is the remainder of dividing the number 13 over the base, which is 10. Programmatically, we denote it as 13%10. Now, this symbol works even for 3%10, as the remainder of the division of a number smaller than the base is the same number.
+
+Now, for the carry, we will divide the number over the base, this way: 13/10. The result is 1.3, and the result means "the number has 1.3 of the bases", and the 0.3 is the remainder! so, what we do, is we round the division to the smaller number (or we call it flooring the number, like the `Math.floor()` in javascript). And for C++, if we store the division in an integer, it automatically floors the decimal to the smallest integer.
+
+And for the rest of the digits, it works the same. But, we just add the carry now. So, for the next digit, it's 1+3+2, as 1 is the carry.
