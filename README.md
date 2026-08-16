@@ -30,7 +30,7 @@ and then
 cd algorithm-square-rooter
 ```
 
-after that, you will find teo files: `build.sh` and `run.sh`, they already are built so you execute the build.sh and then run the resulting binary file with run.sh, but if you know a better way, you can modify them and get them to work your own way. And, please consider installing GCC (or clang on Termux. works perfectly without the need to change anything in the build.sh file). but if you prefer Clang, you can change g++ to cling++.
+after that, you will find the files: `build.sh` and `run.sh`, they already are built so you execute the build.sh and then run the resulting binary file with run.sh, but if you know a better way, you can modify them and get them to work your own way. And, please consider installing GCC (or clang on Termux. works perfectly without the need to change anything in the build.sh file). but if you prefer Clang, you can change g++ to cling++.
 
 After that, the program is running!
 
@@ -56,7 +56,7 @@ For the digits, note that the digits you insert are the exact number of the digi
 
 Another note, if you put the input as 4, it will still infinitely write zeros after the 2. as long as it did not hit the limit of the digits, because I did not make the algorithm to output a pure 2 when square rooting 4.
 
-For the last inout, it is the file. The program will ask you for the file name you want to store the file in it. Please note that the file name you will choose will automatically be before a .txt file. If you wish to use another file extension, feel free to use the command 
+For the last input, it is the file. The program will ask you for the file name you want to store the file in it. Please note that the file name you will choose will automatically be before a .txt file. If you wish to use another file extension, feel free to use the command 
 ```bash
 mv filename.txt filename.yourextension
 ```
