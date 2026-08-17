@@ -232,12 +232,22 @@ Now, let's discuss the operations. The only operations we need are the addition,
 #### Addition
 
 So, for addition, let's have this example:
+```text
 1 2 3 4
        +
   9 2 9
+```
 
 So, as we learned in school (and as I did in my algorithm), here we take the first digit of each number and add them. The result is 9+4=13. As we humans do, we take the first digit, 3, and put it in the result, and put the 1 into the carry. Now, we will be doing this programmatically different. So, 3 here is the remainder of dividing the number 13 over the base, which is 10. Programmatically, we denote it as 13%10. Now, this symbol works even for 3%10, as the remainder of the division of a number smaller than the base is the same number.
 
 Now, for the carry, we will divide the number over the base, this way: 13/10. The result is 1.3, and the result means "the number has 1.3 of the bases", and the 0.3 is the remainder! so, what we do, is we round the division to the smaller number (or we call it flooring the number, like the `Math.floor()` in javascript). And for C++, if we store the division in an integer, it automatically floors the decimal to the smallest integer.
 
 And for the rest of the digits, it works the same. But, we just add the carry now. So, for the next digit, it's 1+3+2, as 1 is the carry.
+
+#### Subtraction
+
+Subtraction is also the same as we learned in the elementary school. Now we will just review how to do it again, just programmatically.
+
+So, as we did in the addition, we will be iterating from the first digit on the right to the left. Right now, we wil be actually looking only for subtracting a smallee number from a bigger number, in order to get a positive result.
+
+
