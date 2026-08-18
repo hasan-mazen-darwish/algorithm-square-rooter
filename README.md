@@ -335,3 +335,97 @@ These are some performance tweaks I'd love to note.
 So, in addition and subtraction, if the integer or the big number is 0, then return the same number instead of doing the whole operations loop.
 
 And for the multiplication, if we are multiplying the number by one, just return the number itself instead of doing the whole loop. If we are multiplying our digit by 0, then simply return 0 for the same reason.
+
+## The actual algorithm
+
+This is the actual interesting part. And here, we will be combining the code with the actual theory.
+
+So, as we know, we started by asking the user for the input, and then, we passed the input (after checking it's validity) to a function that dissects it into two vectors:
+
+```cpp
+struct Parts {
+  std::vector<int> whole  ;
+  std::vector<int> decimal;
+};
+```
+
+and then, requested the number of digits:
+
+```cpp
+unsigned int digits;
+```
+
+Now, we make a for loop that runs for `digits` times:
+
+```cpp
+for (unsigned int i=0; i<digits; i++) {
+  // The logic of ours
+}
+```
+
+Consider that there is `unsigned int nextTwoDigits` outside the for loop to be memory efficient, and inside the loop, we need to know what are the two digits we will move to the remainding number (the one that is in the position of the remainder in the normal division structure. If you do not understand, please review the long division method from the links in the top of the README). To know what digits to pick, we will see: if i (the index of the loop) is smaller than `parts.whole.size()`, the vector's length, then the two digits are in the whole part:
+
+```cpp
+if(i < parts.whole.size()) nextTwoDigits = parts.whole[i];
+```
+
+if the i is bigger or equals to the `parts.whole.size()` but `i - parts.whole.size()` is smaller than the `parts.whole.size()` (`i - parts.whole.size()` is like starting counting again ignoring the whole part, so we can see if the i can be located in the decimal part), then we pick the according decimal part:
+
+```cpp
+else if(
+  i >= parts.whole.size() // Ensuring i is not in the whole part
+  && parts.decimal.size() != 0 // Checking if the decimal part actually exists
+  && i-parts.whole.size() < parts.decimal.size() // Ensuring the new index is inside the decimal length
+) nextTwoDigits = parts.decimal[i - parts.whole.size()];
+```
+
+Otherwise, if the parts are emptied, just use 00 as the next two digits:
+
+```cpp
+else nextTwoDigits = 0;
+```
+
+Now, we will add those two digits to the right of the right of the number resulted in the remainder part. Remember when we said that the biggest number we have to multiply our big number with is 100? now, here is why:
+
+we want to add two digits to the right of a number, say, 13. And we want to add the two digits 25. To do so, we multiply 13 by 100, so we have 2 zeros on the right: 1300. Now, we can simply add 25 to 1300 to have 1325, and that way, we added 2 digits to the right of the number we want.
+
+Therefore, in the algorithm, we have the variable:
+
+```cpp
+BigNumber nextColumnNumber;
+```
+
+and we will add the 2 digits with out simple logic:
+
+```cpp
+nextColumnNumber = nextColumnNumber*100 + nextTwoDigits;
+```
+
+I will explain the digit predicting in a while. But to follow up, you just need to know that this function predicts the next suitable digit:
+
+```cpp
+nextDPrediction = nextDigit(number, nextColumnNumber);
+```
+
+Now, we expand the square root result (stripped from the decimal dot) by pushing the digit we predicted to the right. Using the same logic as pushing the two digits to the remainder section. We add a zero by multiplying with 10, and we add the digit to the big number:
+
+```cpp
+BigNumber number;
+
+// The for loop...
+// After the digit prediction:
+number *= 10;
+numner += nextDPrediction;
+```
+
+and just before the digit adding to the number, we do an operation to the number with the successful digit prediction. So, in long division method, you have to do this operation:
+
+```
+BigNumber bestColumnPrediction = (number*20 + nextDPrediction)*nextDPrediction
+```
+
+it is like saying: multiply that number by 2, push the predicted digit to the right of it, and multiply this new number by the digit. It's a rigorous process that is hard to explain the why behind it without visuals (consider searching on YouTube for it). Then, this resulted number will be subtracted from the numner that is on the remainder side:
+
+```cpp
+nextColumnNumber -= bestColumnPrediction;
+```
