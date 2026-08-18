@@ -313,3 +313,25 @@ Now what happens when we do something like 1000-1?
 well, we start what we will call a borrow chain. So, the first digit, 0, will get subtracted by 1. Since 1>0, we need toadd 10 to it, so it becomes 10, and then 10-1=9. Now, we will subtract one from the second digit, which is 0 indeed! so, we need to, again, borrow from the next digit and add 10 to the current digit, all of that until we reach the digit that has 1, and we borrow 1 of it, and the chain stops.
 
 Programmatically, we set a boolean that determines if the last digit used borrowing. If it is true, that means that the digit before borrowed from this digit, therefore we subtract 1 from the current digit and sets this boolean to false. However, since the current digit can be 0, if it is zero we keep the boolean true if the digit we are subtracting is not 0 (0-0=0>=0), since we need to borrow from the next digit. However, if the boolean is true and the digit is 0, we convert the current digit to (base-1) and keep the boolean true. And, we continue subtracting each digit by digit until we get the final answer.
+
+#### Multiplication
+
+I am not going to dive into the multiplication. I am only going to explain one case, which is the only one we are facing in our algorithm.
+
+So, since the biggest number we are multiplying our big numbers is 100 (we will see why later when we explain the algorithm programmatically), and 100 is considered a one digit in a 10^17 base number system, we will only explain how a number is multiplied to a single digit.
+
+```text
+1 2 3 4
+        ×
+      5
+```
+
+Again, we will take our single digit number, and start multiplying it by the digits from the smallest to tne biggest. So, 5×4 = 20. Now, as we did in the addition, we take the remainder 20 % 10 (the base) = 0, set it as the first digit of the result, and get the carry, which is 20/10 (the base) = 2, and continue as we did in the addition! multiply our single digit number by the second digit and add the carry and so on. And yeah, it is that simple for single digits.
+
+#### Performance notes I'd love to mention
+
+These are some performance tweaks I'd love to note.
+
+So, in addition and subtraction, if the integer or the big number is 0, then return the same number instead of doing the whole operations loop.
+
+And for the multiplication, if we are multiplying the number by one, just return the number itself instead of doing the whole loop. If we are multiplying our digit by 0, then simply return 0 for the same reason.
