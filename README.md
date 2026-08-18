@@ -250,4 +250,66 @@ Subtraction is also the same as we learned in the elementary school. Now we will
 
 So, as we did in the addition, we will be iterating from the first digit on the right to the left. Right now, we wil be actually looking only for subtracting a smallee number from a bigger number, in order to get a positive result.
 
+So, first of all, let's discuss the first case; when every digit is smaller than the one we are extracting from:
 
+```text
+9 8 7 6
+        -
+5 4 3 2
+```
+
+This one is probably the easiest to explain. See, we start iterating from the first digit. So, 6-2 = 4, and continuing the digits: 7-3 = 4, 8-4 = 4, and 9-5 = 4. Combining all of these, the result will be 9876-5432 = 4444.
+
+Now, what if we have a different digit count? Let's take this example:
+
+```text
+9 8 7 6
+        -
+    5 4
+```
+
+here, we simply convert it to:
+
+```text
+9 8 7 6
+        -
+0 0 5 4
+```
+
+and just do the same exact steps.
+
+Now, what if we have a digit that's smaller than the digit qe are subtracting? Let's take this example:
+
+```text
+8 1 7 2
+        -
+5 6 9 3
+```
+
+Here, we will subtract the 3 from two. But wait, 2-3 = -1, and this is inacceptable. 
+
+To solve this issue, we need to know: the representation of the number we are dealing with, like in 8172, can be written like:
+
+```text
+8172 = 2×10^0 + 7×10^1 + 1×10^2 + 8×10^3
+OR
+8172 = 2×base^0 + 7×base^1 + 1×base^2 + 8×base^3
+```
+
+and so, to subtract the small digit from the big digit, we try to do the following: why not adding the base^n (in our case, 10, since it is decimals) to the digit, and subtract base^n from the second digit? So, the digit 2 becomes 2+10^1 = 12. And the representation of this number becomes:
+
+```text
+8172 = 12×10^0 + 6×10^1 + 1×10^2 + 8×10^3
+```
+
+and now, we do 12-3 = 9. And this is called **borrowing**.
+
+Now, continuing this, we will have 6-9, and we will do the same: add 10 to the 6 to become 16, and subtract 10 from 10, therefore subtracting 1 from the next digit when borrowing, always. So now, 16-9 = 7, and the next digit becomes 1-1=0.
+
+continue like that and the result will be 8172-5693 = 2479.
+
+Now what happens when we do something like 1000-1?
+
+well, we start what we will call a borrow chain. So, the first digit, 0, will get subtracted by 1. Since 1>0, we need toadd 10 to it, so it becomes 10, and then 10-1=9. Now, we will subtract one from the second digit, which is 0 indeed! so, we need to, again, borrow from the next digit and add 10 to the current digit, all of that until we reach the digit that has 1, and we borrow 1 of it, and the chain stops.
+
+Programmatically, we set a boolean that determines if the last digit used borrowing. If it is true, that means that the digit before borrowed from this digit, therefore we subtract 1 from the current digit and sets this boolean to false. However, since the current digit can be 0, if it is zero we keep the boolean true if the digit we are subtracting is not 0 (0-0=0>=0), since we need to borrow from the next digit. However, if the boolean is true and the digit is 0, we convert the current digit to (base-1) and keep the boolean true. And, we continue subtracting each digit by digit until we get the final answer.
