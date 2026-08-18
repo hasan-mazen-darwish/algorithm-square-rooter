@@ -429,3 +429,49 @@ it is like saying: multiply that number by 2, push the predicted digit to the ri
 ```cpp
 nextColumnNumber -= bestColumnPrediction;
 ```
+
+## Predicting digits
+
+Finally, we will explain the last piece.
+
+here's the thing: we can do simply iterate through the digits from 0 to 9, and get ourselves a perfectly working digits prediction model. But, with this model, I tested generating 100,000 digits and I had to wait 87 seconds ± 2 seconds. So, how did the program achieve the 67 seconds benchmark?
+
+So, to check if a digit is the one, it must achieve this rule:
+
+say the right digit is d. Then: d×(20×number + d) must be smaller than the remainder we have after adding the two digits, and at the same time, the digit next to it, m = d+1, the value m×(20×number + m) must be bigger than the remainder we have after adding the 2 digits. So, we can iterate from 0 to 9, store the value we have from that operation, and stop once we have a number bigger than the remainder section.
+
+But, here is the optimized version; let's say we test the digit 5. Then we have 2 cases: either the result is bigger than the remainder, then we know the digit is either 0,1,2,3, or 4 because we need to look at smaller digits, or the result is actually smaller and then we know the digit is either 5 (because it did not exceed the remainder!), 6, 7, 8 or 9.
+
+Now, we do the same as we go narrower and narrower, always picking the number in the middle of the scope! it is 4-5 iterations maximum, and that's half the maximum of the normal way!
+
+Here's the code:
+
+```cpp
+unsigned int low = 0, high = 9;
+while (low <= high) {
+  unsigned int mid = (low + high) / 2;
+  BigNumber trial = (number * 20 + mid) * mid;
+  if (trial <= nextColumnNumber) {
+    best_d = mid;
+    bestColumnPrediction = trial;
+    low = mid + 1;   // Try higher digits
+  } else {
+    high = mid - 1;  // Try lower digits
+  }
+}
+```
+So, here we have the low and high. the lowest digit we accept so far, and the highest digit we get so far.
+
+now, we do a while loop that breaks once the low is bigger than the high. We calculate the mid via having the center of the scope (rounded to the smallest integer), and then calculating the trial (the one we test the mid digit with).
+
+So, if the trial is smaller or equals than the remainder number with the two digits attached to it, then the number is definitely either the mid or the numbers after the mid and before the high. So we set the low to the mid.
+
+Otherwise, if the trial is higher, then definitely mid is not valid, and the valid numbers are those between the low (included) and mid (excluded), so we set the high to include the digit before the mid, since mid is rejected.
+
+But wait, we said that if the trial is smaller or equals to the column number, why did we set the low to mid + 1 and not mid? that is just to make the while loop stops. as you see, we put the `best_d` as mid, not mid + 1. Here is an example to understand the point:
+
+let's say the correct digit is 6. We start with 5, trial is smaller, we set the low as 6 and the high remains 9. We try with 7, the new mid, the trial is bigger, then we set the high to 6. Now, low = high, it still triggers the while loop (since the condition is <=), but the best d so far is 5 because we are not setting best d but only when the trial is smaller. Now, the mid is 6, we try, the mid is smaller, we set the low as mid+1, therefore 7, and 7>6 and therefore low>high and the loop breakes with `best_d = 6`
+
+---
+
+Thanks for reading this README!
