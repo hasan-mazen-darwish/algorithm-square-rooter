@@ -415,7 +415,7 @@ BigNumber number;
 // The for loop...
 // After the digit prediction:
 number *= 10;
-numner += nextDPrediction;
+number += nextDPrediction;
 ```
 
 and just before the digit adding to the number, we do an operation to the number with the successful digit prediction. So, in long division method, you have to do this operation:
