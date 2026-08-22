@@ -46,6 +46,20 @@ Please consider that this algorithm is too low for large digits, even if it is w
 | `sqrt_2_1K.txt` | 1,000 | 28ms |
 | `sqrt_2_100.txt` | 100 | 3ms |
 
+**EDIT:** this benchmark was done before the `-O3` optimization in the `build.sh`! Here is the new benchmark after that flag that boosts the speed:
+
+| digits of √2 | POCO X7 Pro | Dell Latitude E6440 |
+|--------------|-------------|--------------------|
+| 100 | <1ms | <1ms |
+| 1,000 | 7ms | 23ms |
+| 10,000 | 179ms | 198ms |
+| 100,000 | 17232ms (17.232 seconds) | 13047ms (13.047 seconds) |
+| 1,000,000 | 1710923ms (~28.5 minutes!) | 1370661ms (~22.8 minutes!) |
+
+the new results got me so optimistic about the -O3 optimization and it's role!
+
+---
+
 And please note that these times are for generating the square root of the number 2 for a precision of a given digit. The device used was the Termux on POCO X7 Pro.
 
 ## Input
