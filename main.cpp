@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <algorithm>
 #include "BigNumber.h"
 
 bool isNumberValid(const std::string &str) {
